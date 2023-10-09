@@ -3,6 +3,10 @@
     "description": "A minimal Laravel starter-kit. Built with React.js, Inertia.js, Ant Design, Laravel Permission",
     "type": "library",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/vinceredigital/heatstroke/issues",
+        "source": "https://github.com/vinceredigital/heatstroke"
+    },
     "autoload": {
         "psr-4": {
             "Vincere\\Heatstroke\\": "src/"
@@ -14,5 +18,16 @@
             "email": "alfred@vinceredigital.com"
         }
     ],
-    "require": {}
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Vincere\\Heatstroke\\HeatstrokeServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": "^8.2.0"
+    }
 }
