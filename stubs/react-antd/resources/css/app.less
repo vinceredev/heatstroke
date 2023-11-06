@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ant-menu-light.ant-menu-root.ant-menu-inline {
+    border-inline-end: 0;
+}
+
+.ant-btn-primary {
+    @apply bg-primary !important;
+}
+
+.ant-switch {
+    background: rgba(0, 0, 0, 0.25) !important;
+
+    &.ant-switch-checked {
+        @apply bg-primary !important;
+    }
+}
