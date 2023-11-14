@@ -35,6 +35,20 @@ class InstallCommand extends Command implements PromptsForMissingInput
             }) === 0;
     }
 
+    protected static function addHelperFile($helpers)
+    {
+        $composer = json_decode(file_get_contents(base_path('composer.json')), true);
+
+        $composer['autoload'] += [
+            "files" => $helpers
+        ];
+
+        file_put_contents(
+            base_path('composer.json'),
+            json_encode($composer, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL
+        );
+    }
+
     protected static function updateNodePackages(callable $callback, $dev = true)
     {
         if (!file_exists(base_path('package.json'))) {
@@ -123,6 +137,8 @@ class InstallCommand extends Command implements PromptsForMissingInput
         (new Filesystem)->ensureDirectoryExists(app_path('Utilities'));
         (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/default/app/Utilities', app_path('Utilities'));
 
+        $this->addHelperFile(["app/Utilities/I18n.php"]);
+
         // Mail
         (new Filesystem)->ensureDirectoryExists(app_path('Mail'));
         (new Filesystem)->ensureDirectoryExists(resource_path('views/emails'));
@@ -198,6 +214,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
         $this->replaceInFile('vite build', 'vite build && vite build --ssr', base_path('package.json'));
         $this->replaceInFile('/node_modules', '/bootstrap/ssr' . PHP_EOL . '/node_modules', base_path('.gitignore'));
 
+        $this->runCommands(['composer dump-autoload']);
         $this->components->info('Installing and building Node dependencies.');
 
         if (file_exists(base_path('bun.lockb'))) {
