@@ -12,7 +12,7 @@ $ composer require vincere/heatstroke
 Then, you need to install the scaffolding and also run the database migration, to do so please run:
 ```bash
 $ php artisan heatstroke:install
-$ php artisan migrate
+$ php artisan migrate --seed
 ```
 
 Once everything is set, now you can navigate to browser to see the application.
