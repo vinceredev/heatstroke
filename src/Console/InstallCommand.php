@@ -120,13 +120,15 @@ class InstallCommand extends Command implements PromptsForMissingInput
         (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/default/app/Jobs', app_path('Jobs'));
 
         // Lang...
-        copy(__DIR__ . '/../../stubs/default/app/Lang/lang.php', app_path('Lang/lang.php'));
-        copy(__DIR__ . '/../../stubs/default/lang/en.json', base_path('lang/en.json'));
+        (new Filesystem)->ensureDirectoryExists(app_path('Utilities'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/default/app/Utilities', app_path('Utilities'));
 
         // Mail
-        copy(__DIR__ . '/../../stubs/default/app/Mail/InvitationMail.php', app_path('Mail/InvitationMail.php'));
-        copy(__DIR__ . '/../../stubs/default/resources/views/emails/InvitationMail.blade.php', base_path('resources/views/emails/InvitationMail.blade.php'));
+        (new Filesystem)->ensureDirectoryExists(app_path('Mail'));
+        (new Filesystem)->ensureDirectoryExists(resource_path('views/emails'));
 
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/default/app/Mail', app_path('Mail'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/default/resources/views/emails', resource_path('views/emails'));
 
         // Models...
         copy(__DIR__ . '/../../stubs/default/app/Models/User.php', app_path('Models/User.php'));
@@ -161,13 +163,34 @@ class InstallCommand extends Command implements PromptsForMissingInput
         copy(__DIR__ . '/../../stubs/default/database/seeders/RoleSeeder.php', base_path('database/seeders/RoleSeeder.php'));
 
         // Assets
-        copy(__DIR__ . '/../../stubs/default/public/images/vincere_logo.png', base_path('public/images/vincere_logo.png'));
+        (new Filesystem)->ensureDirectoryExists(app_path('public/images'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/default/public/images', base_path('public/images'));
 
         // Tailwind / Vite...
+        if (file_exists(resource_path('js/app.js'))) {
+            unlink(resource_path('js/app.js'));
+        }
+
+        if (file_exists(resource_path('css/app.css'))) {
+            unlink(resource_path('css/app.css'));
+        }
+
+        copy(__DIR__ . '/../../stubs/react-antd/resources/js/app.jsx', resource_path('js/app.jsx'));
         copy(__DIR__ . '/../../stubs/react-antd/resources/css/app.less', resource_path('css/app.less'));
         copy(__DIR__ . '/../../stubs/default/postcss.config.js', base_path('postcss.config.js'));
         copy(__DIR__ . '/../../stubs/default/tailwind.config.js', base_path('tailwind.config.js'));
         copy(__DIR__ . '/../../stubs/default/vite.config.js', base_path('vite.config.js'));
+
+        // Components + Pages
+        (new Filesystem)->ensureDirectoryExists(resource_path('js/Components'));
+        (new Filesystem)->ensureDirectoryExists(resource_path('js/Layouts'));
+        (new Filesystem)->ensureDirectoryExists(resource_path('js/Libs'));
+        (new Filesystem)->ensureDirectoryExists(resource_path('js/Pages'));
+
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/react-antd/resources/js/Components', resource_path('js/Components'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/react-antd/resources/js/Layouts', resource_path('js/Layouts'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/react-antd/resources/js/Libs', resource_path('js/Libs'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/react-antd/resources/js/Pages', resource_path('js/Pages'));
 
         // SSR
         copy(__DIR__ . '/../../stubs/react-antd/resources/js/ssr.jsx', resource_path('js/ssr.jsx'));

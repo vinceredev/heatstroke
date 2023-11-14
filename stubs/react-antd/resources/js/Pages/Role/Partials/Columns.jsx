@@ -1,4 +1,4 @@
-import { Collapse, Tag, Avatar, Button, Modal, Tooltip } from "antd";
+import { Collapse, Button, Modal, Tooltip } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { formatDistance } from "date-fns";
 import { usePage } from "@inertiajs/react";
@@ -13,89 +13,99 @@ const CreateColumn = () => {
             title: "Role Name",
             key: "responsive_name",
             responsive: ["xs"],
-            render: (_, row) => (
-                <div className="responsive-table">
-                    <span className="text-sm capitalize text-black/80">
-                        {row?.name}
-                    </span>
-                    <Collapse ghost>
-                        <Panel header="Expand Data" key="1">
-                            <div className="responsive-table__list">
-                                <div className="responsive-table__list__column">
-                                    Total User
+            render: (_, row) => {
+                const canDelete = row?.id !== 1 && row?.users_count === 0;
+                return (
+                    <div className="responsive-table">
+                        <span className="text-sm capitalize text-black/80">
+                            {row?.name}
+                        </span>
+                        <Collapse ghost>
+                            <Panel header="Expand Data" key="1">
+                                <div className="responsive-table__list">
+                                    <div className="responsive-table__list__column">
+                                        Total User
+                                    </div>
+                                    <div className="responsive-table__list__value">
+                                        {row?.users_count} users
+                                    </div>
                                 </div>
-                                <div className="responsive-table__list__value">
-                                    {row?.users_count} users
+                                <div className="responsive-table__list">
+                                    <div className="responsive-table__list__column">
+                                        Join Date
+                                    </div>
+                                    <div className="responsive-table__list__value">
+                                        {formatDistance(
+                                            new Date(row?.created_at),
+                                            new Date(),
+                                            { addSuffix: true }
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="responsive-table__list">
-                                <div className="responsive-table__list__column">
-                                    Join Date
-                                </div>
-                                <div className="responsive-table__list__value">
-                                    {formatDistance(
-                                        new Date(row?.created_at),
-                                        new Date(),
-                                        { addSuffix: true }
-                                    )}
-                                </div>
-                            </div>
-                            {permissions.edit_role ||
-                                (permissions.delete_role && (
-                                    <div className="responsive-table__list">
-                                        <div className="responsive-table__list__column">
-                                            Action
-                                        </div>
-                                        <div className="responsive-table__list__value">
-                                            <>
-                                                <div className="flex items-center gap-4">
-                                                    {permissions.edit_role && (
-                                                        <Button
-                                                            type="link"
-                                                            href={route(
-                                                                "role.edit",
-                                                                { id: row?.id }
-                                                            )}
-                                                        >
-                                                            <EditOutlined
-                                                                size={20}
-                                                            />
-                                                        </Button>
-                                                    )}
-                                                    {permissions.delete_role && (
-                                                        <Tooltip title="Can not delete role if there is a member or the role is Super Admin">
+                                {permissions.edit_role ||
+                                    (permissions.delete_role && (
+                                        <div className="responsive-table__list">
+                                            <div className="responsive-table__list__column">
+                                                Action
+                                            </div>
+                                            <div className="responsive-table__list__value">
+                                                <>
+                                                    <div className="flex items-center gap-4">
+                                                        {permissions.edit_role && (
                                                             <Button
                                                                 type="link"
-                                                                disabled={
-                                                                    row?.id ===
-                                                                        1 ||
-                                                                    row?.users_count >
-                                                                        0
-                                                                }
-                                                                onClick={() => {
-                                                                    Modal.confirm(
-                                                                        {
-                                                                            title: "Delete role",
-                                                                            content: `Are you sure want to remove ${row?.name}?`,
-                                                                        }
-                                                                    );
-                                                                }}
+                                                                href={route(
+                                                                    "role.edit",
+                                                                    {
+                                                                        id: row?.id,
+                                                                    }
+                                                                )}
                                                             >
-                                                                <DeleteOutlined
+                                                                <EditOutlined
                                                                     size={20}
                                                                 />
                                                             </Button>
-                                                        </Tooltip>
-                                                    )}
-                                                </div>
-                                            </>
+                                                        )}
+                                                        {permissions.delete_role && (
+                                                            <Tooltip
+                                                                title={
+                                                                    canDelete
+                                                                        ? null
+                                                                        : "Can not delete role if there is a member or the role is Super Admin"
+                                                                }
+                                                            >
+                                                                <Button
+                                                                    type="link"
+                                                                    disabled={
+                                                                        !canDelete
+                                                                    }
+                                                                    onClick={() => {
+                                                                        Modal.confirm(
+                                                                            {
+                                                                                title: "Delete role",
+                                                                                content: `Are you sure want to remove ${row?.name}?`,
+                                                                            }
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    <DeleteOutlined
+                                                                        size={
+                                                                            20
+                                                                        }
+                                                                    />
+                                                                </Button>
+                                                            </Tooltip>
+                                                        )}
+                                                    </div>
+                                                </>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
-                        </Panel>
-                    </Collapse>
-                </div>
-            ),
+                                    ))}
+                            </Panel>
+                        </Collapse>
+                    </div>
+                );
+            },
         },
         {
             title: "Name",
@@ -126,38 +136,45 @@ const CreateColumn = () => {
             key: "action",
             responsive: ["sm"],
             hidden: !(permissions.edit_role || permissions.delete_role),
-            render: (_, row) => (
-                <>
-                    <div className="flex items-center">
-                        {permissions.edit_role && (
-                            <Button
-                                type="link"
-                                href={route("role.edit", { id: row?.id })}
-                            >
-                                <EditOutlined size={20} />
-                            </Button>
-                        )}
-                        {permissions.delete_role && (
-                            <Tooltip title="Can not delete role if there is a member or the role is Super Admin">
+            render: (_, row) => {
+                const canDelete = row?.id !== 1 && row?.users_count === 0;
+                return (
+                    <>
+                        <div className="flex items-center">
+                            {permissions.edit_role && (
                                 <Button
                                     type="link"
-                                    disabled={
-                                        row?.id === 1 || row?.users_count > 0
-                                    }
-                                    onClick={() => {
-                                        Modal.confirm({
-                                            title: "Delete role",
-                                            content: `Are you sure want to remove ${row?.name}?`,
-                                        });
-                                    }}
+                                    href={route("role.edit", { id: row?.id })}
                                 >
-                                    <DeleteOutlined size={20} />
+                                    <EditOutlined size={20} />
                                 </Button>
-                            </Tooltip>
-                        )}
-                    </div>
-                </>
-            ),
+                            )}
+                            {permissions.delete_role && (
+                                <Tooltip
+                                    title={
+                                        canDelete
+                                            ? null
+                                            : "Can not delete role if there is a member or the role is Super Admin"
+                                    }
+                                >
+                                    <Button
+                                        type="link"
+                                        disabled={!canDelete}
+                                        onClick={() => {
+                                            Modal.confirm({
+                                                title: "Delete role",
+                                                content: `Are you sure want to remove ${row?.name}?`,
+                                            });
+                                        }}
+                                    >
+                                        <DeleteOutlined size={20} />
+                                    </Button>
+                                </Tooltip>
+                            )}
+                        </div>
+                    </>
+                );
+            },
         },
     ].filter((item) => !item.hidden);
 

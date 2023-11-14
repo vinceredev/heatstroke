@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
+use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -30,11 +32,31 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $permissions = [];
+        $auth = $request->user();
+
+        if ($auth) {
+            $permissions = Permission::all()
+                ->pluck('name')
+                ->reduce(function ($carry, $name) use ($auth) {
+                    $carry[Str::snake($name, '_')] = $auth->can($name);
+                    return $carry;
+                }, []);
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $auth,
+                'permissions' => $permissions,
             ],
+            'flash' => fn () => [
+                'success' => session('success'),
+                'warning' => session('warning'),
+                'error' => session('error'),
+                'status' => session('status'),
+            ],
+            'language' => fn () => translations(base_path('lang/' . app()->getLocale() . '.json')),
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
