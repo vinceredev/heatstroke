@@ -213,6 +213,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
         $this->replaceInFile('vite build', 'vite build && vite build --ssr', base_path('package.json'));
         $this->replaceInFile('/node_modules', '/bootstrap/ssr' . PHP_EOL . '/node_modules', base_path('.gitignore'));
+        $this->replaceInFile("HOME = '/home'", "HOME = '/'", app_path('Providers/RouteServiceProvider.php'));
 
         $this->runCommands(['composer dump-autoload']);
         $this->components->info('Installing and building Node dependencies.');
