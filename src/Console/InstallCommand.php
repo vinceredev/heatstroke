@@ -144,7 +144,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
         (new Filesystem)->ensureDirectoryExists(resource_path('views/emails'));
 
         (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/default/app/Mail', app_path('Mail'));
-        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/default/resources/views/emails', resource_path('views/emails'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/react-antd/resources/views/emails', resource_path('views/emails'));
 
         // Models...
         copy(__DIR__ . '/../../stubs/default/app/Models/User.php', app_path('Models/User.php'));
