@@ -1,21 +1,29 @@
 ## Heatstroke
-A minimal Laravel starter-kit, heavily inspired by [Laravel Breeze](https://laravel.com/docs/master/starter-kits#laravel-breeze) with additional commonly used package to help you start faster when building ERP, CRM, or Internal Dashboard.  
-Built with React.js, Inertia.js, Ant Design, and Laravel Permission.
+A minimal Laravel starter-kit, heavily inspired by [Laravel Breeze](https://laravel.com/docs/master/starter-kits#laravel-breeze) with additional commonly used package to help you start faster when building ERP, CRM, or Internal Dashboard. Built with React.js, Inertia.js, Ant Design.
 
+Packages included in heatstroke:
+* React.js
+* Inertia.js
+* Ant Design
+* TailwindCSS
+* Laravel Sanctum
+* Intervention Image
+* Laravel Permission
+* Ziggy
 
 ### Installation
-This package should be installed first after you set a freshly new Laravel project. You also need to run Laravel's database migration before installing Heatstroke. To install `heatstroke` run:
+This package needs to be the first one you install after setting up a brand-new Laravel project. Before installing Heatstroke, make sure to run Laravel's database migration and you've committed all the previous changes. To install Heatstroke, use the following command:
 
 ```bash
 $ composer require vincere/heatstroke
 ```
-Then, you need to install the scaffolding and also run the database migration, to do so please run:
+Next, you'll have to install the scaffolding and run the database migration. To achieve this, please execute the following command:
 ```bash
 $ php artisan heatstroke:install
 $ php artisan migrate --seed
 ```
 
-Once everything is set, now you can navigate to browser to see the application.
+Once everything is set up, run the app, and you can then open your browser to see the application in action.
 
 ## License
 Heatstroke is licensed under [MIT](./LICENSE)
