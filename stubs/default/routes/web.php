@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\LogActivityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StaffController;
@@ -42,9 +43,13 @@ Route::middleware('auth')->group(function () {
         Route::patch('roles/{id}', 'update')->name('role.update')->middleware(['can:edit role']);
         Route::delete('roles', 'destroy')->name('role.destroy')->middleware(['can:delete role']);
     });
+
+    Route::controller(LogActivityController::class)->middleware('auth')->group(function () {
+        Route::get('logs', 'index')->name('log.index')->middleware('can:view log');
+    });
 });
 
-Route::controller(InvitationController::class)->group(function() {
+Route::controller(InvitationController::class)->group(function () {
     Route::get('invitation/{token}', 'edit')->name('invitation.edit');
     Route::patch('invitation/{token}', 'update')->name('invitation.update');
 });

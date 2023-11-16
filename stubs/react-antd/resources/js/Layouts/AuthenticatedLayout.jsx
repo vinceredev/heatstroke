@@ -4,6 +4,7 @@ import { Link, usePage } from "@inertiajs/react";
 import { App, Layout, Menu } from "antd";
 import {
     DashboardOutlined,
+    FieldTimeOutlined,
     LockOutlined,
     UsergroupAddOutlined,
 } from "@ant-design/icons";
@@ -83,6 +84,16 @@ export default function Authenticated({ children }) {
                             label: (
                                 <Link href={route("role.index")}>
                                     {__("Role & Permission")}
+                                </Link>
+                            ),
+                        },
+                        {
+                            key: "log.index",
+                            icon: <FieldTimeOutlined />,
+                            hidden: !permissions.view_log,
+                            label: (
+                                <Link href={route("log.index")}>
+                                    {__("Activity Logs")}
                                 </Link>
                             ),
                         },
