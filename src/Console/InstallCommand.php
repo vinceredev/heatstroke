@@ -91,9 +91,19 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
     public function installHeatstrokeStack()
     {
-        if (!$this->requireComposerPackages(['inertiajs/inertia-laravel:^0.6.3', 'laravel/sanctum:^3.2', "intervention/image:^2.7", "spatie/laravel-permission:^6.0", 'tightenco/ziggy:^1.0'])) {
+        if (!$this->requireComposerPackages([
+            'inertiajs/inertia-laravel:^0.6.3',
+            'laravel/sanctum:^3.2',
+            'intervention/image:^2.7',
+            'spatie/laravel-activitylog:^4.7',
+            'spatie/laravel-permission:^6.0',
+            'tightenco/ziggy:^1.0',
+        ])) {
             return 1;
         }
+
+        // publish laravel activity migration files
+        $this->runCommands(['php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="activitylog-migrations"']);
 
         $this->updateNodePackages(function ($packages) {
             return [
@@ -112,6 +122,7 @@ class InstallCommand extends Command implements PromptsForMissingInput
                 'react' => '^18.2.0',
                 'react-dom' => '^18.2.0',
                 'tailwindcss' => '^3.2.1',
+                'ua-parser-js' => '^1.0.37',
                 'vite' => '^4.0.0'
             ] + $packages;
         });
@@ -148,6 +159,10 @@ class InstallCommand extends Command implements PromptsForMissingInput
 
         // Models...
         copy(__DIR__ . '/../../stubs/default/app/Models/User.php', app_path('Models/User.php'));
+
+        // Providers
+        (new Filesystem)->ensureDirectoryExists(app_path('Providers'));
+        (new Filesystem)->copyDirectory(__DIR__ . '/../../stubs/default/app/Providers', app_path('Providers'));
 
         // Queries...
         (new Filesystem)->ensureDirectoryExists(app_path('Queries'));

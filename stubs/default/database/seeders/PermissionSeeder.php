@@ -15,9 +15,12 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $arrayOfPermissionNames = [
+            // Misc
             'view dashboard',
             'edit dashboard',
+            'view log',
 
+            // Profile
             'view profile',
             'edit profile',
             'edit password profile',
